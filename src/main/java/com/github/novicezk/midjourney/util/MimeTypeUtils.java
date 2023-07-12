@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import lombok.experimental.UtilityClass;
 
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -15,13 +16,13 @@ public class MimeTypeUtils {
 
 	static {
 		MIME_TYPE_MAP = new HashMap<>();
-		var resource = MimeTypeUtils.class.getResource("/mime.types");
-		var lines = FileUtil.readLines(resource, StandardCharsets.UTF_8);
-		for (var line : lines) {
+		URL resource = MimeTypeUtils.class.getResource("/mime.types");
+		List<String> list = FileUtil.readLines(resource, StandardCharsets.UTF_8);
+		for (String line : list) {
 			if (CharSequenceUtil.isBlank(line)) {
 				continue;
 			}
-			var arr = line.split(":");
+			String[] arr = line.split(":");
 			MIME_TYPE_MAP.put(arr[0], CharSequenceUtil.split(arr[1], ' '));
 		}
 	}
@@ -35,7 +36,7 @@ public class MimeTypeUtils {
 			key = MIME_TYPE_MAP.keySet().stream().filter(k -> CharSequenceUtil.startWithIgnoreCase(mimeType, k))
 					.findFirst().orElse(null);
 		}
-		var suffixList = MIME_TYPE_MAP.get(key);
+		List<String> suffixList = MIME_TYPE_MAP.get(key);
 		if (suffixList == null || suffixList.isEmpty()) {
 			return null;
 		}

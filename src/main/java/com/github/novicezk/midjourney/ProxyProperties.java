@@ -52,10 +52,6 @@ public class ProxyProperties {
 	 */
 	private String notifyHook;
 	/**
-	 * 通知回调线程池大小.
-	 */
-	private int notifyPoolSize = 10;
-	/**
 	 * 接口是否返回任务扩展属性.
 	 */
 	private boolean includeTaskExtended = false;
@@ -160,11 +156,11 @@ public class ProxyProperties {
 		/**
 		 * 代理host.
 		 */
-		private String host;
+		private String host = "127.0.0.1";
 		/**
 		 * 代理端口.
 		 */
-		private Integer port;
+		private Integer port = 7890;
 	}
 
 	@Data
@@ -196,6 +192,6 @@ public class ProxyProperties {
 		/**
 		 * 任务超时时间(分钟).
 		 */
-		private int timeoutMinutes = 5;
+		private int timeoutMinutes = 9;
 	}
 }

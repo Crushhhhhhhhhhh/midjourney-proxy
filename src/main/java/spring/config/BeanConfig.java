@@ -5,8 +5,6 @@ import com.github.novicezk.midjourney.service.TaskStoreService;
 import com.github.novicezk.midjourney.service.TranslateService;
 import com.github.novicezk.midjourney.service.store.InMemoryTaskStoreServiceImpl;
 import com.github.novicezk.midjourney.service.store.RedisTaskStoreServiceImpl;
-import com.github.novicezk.midjourney.service.translate.BaiduTranslateServiceImpl;
-import com.github.novicezk.midjourney.service.translate.GPTTranslateServiceImpl;
 import com.github.novicezk.midjourney.support.Task;
 import com.github.novicezk.midjourney.support.TaskMixin;
 import com.github.novicezk.midjourney.wss.WebSocketStarter;
@@ -26,26 +24,40 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
 
-@Configuration
+@Configuration("BeanConfig")
 public class BeanConfig {
 
 	@Bean
 	TranslateService translateService(ProxyProperties properties) {
-		return switch (properties.getTranslateWay()) {
-			case BAIDU -> new BaiduTranslateServiceImpl(properties.getBaiduTranslate());
-			case GPT -> new GPTTranslateServiceImpl(properties);
-			default -> prompt -> prompt;
-		};
+		TranslateService translateService1;
+		switch (properties.getTranslateWay()) {
+			case BAIDU :
+				translateService1 = null;
+				break;
+			case GPT :
+				translateService1 = null;
+				break;
+			default:
+				translateService1 = null;		}
+		return translateService1;
 	}
 
 	@Bean
 	TaskStoreService taskStoreService(ProxyProperties proxyProperties, RedisConnectionFactory redisConnectionFactory) {
 		ProxyProperties.TaskStore.Type type = proxyProperties.getTaskStore().getType();
 		Duration timeout = proxyProperties.getTaskStore().getTimeout();
-		return switch (type) {
-			case IN_MEMORY -> new InMemoryTaskStoreServiceImpl(timeout);
-			case REDIS -> new RedisTaskStoreServiceImpl(timeout, taskRedisTemplate(redisConnectionFactory));
+		Object translateService1;
+		switch (type) {
+			case IN_MEMORY :
+				translateService1 =new InMemoryTaskStoreServiceImpl(timeout);
+				break;
+			case REDIS :
+				translateService1 = new RedisTaskStoreServiceImpl(timeout, taskRedisTemplate(redisConnectionFactory));
+				break;
+			default:
+				translateService1 = null;
 		};
+		return (TaskStoreService) translateService1;
 	}
 
 	@Bean

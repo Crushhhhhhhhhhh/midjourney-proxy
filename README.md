@@ -83,7 +83,7 @@ docker run -d --name midjourney-proxy \
  <img src="https://raw.githubusercontent.com/novicezk/midjourney-proxy/main/docs/manager-qrcode.png" width="320" alt="微信二维码"/>
 
 ## 本地开发
-- 依赖java17和maven
+- 依赖java1.8和maven
 - 更改配置项: 修改src/main/application.yml
 - 项目运行: 启动ProxyApplication的main函数
 - 更改代码后，构建镜像: Dockerfile取消VOLUME的注释，执行 `docker build . -t midjourney-proxy`

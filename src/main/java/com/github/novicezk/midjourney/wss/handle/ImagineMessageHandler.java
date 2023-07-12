@@ -13,6 +13,8 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -41,8 +43,8 @@ public class ImagineMessageHandler extends MessageHandler {
 			if ("Waiting to start".equals(parseData.getStatus())) {
 				// 开始
 				TaskCondition condition = new TaskCondition()
-						.setActionSet(Set.of(TaskAction.IMAGINE))
-						.setStatusSet(Set.of(TaskStatus.SUBMITTED));
+						.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.IMAGINE)))
+						.setStatusSet(new HashSet<TaskStatus>(Collections.singleton(TaskStatus.SUBMITTED)));
 				Task task = this.taskQueueHelper.findRunningTask(taskPredicate(condition, realPrompt))
 						.findFirst().orElse(null);
 				if (task == null) {
@@ -54,9 +56,12 @@ public class ImagineMessageHandler extends MessageHandler {
 				task.awake();
 			} else {
 				// 完成
+				HashSet<TaskStatus> taskStatuses = new HashSet<>();
+				taskStatuses.add(TaskStatus.SUBMITTED);
+				taskStatuses.add(TaskStatus.IN_PROGRESS);
 				TaskCondition condition = new TaskCondition()
-						.setActionSet(Set.of(TaskAction.IMAGINE))
-						.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+						.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.IMAGINE)))
+						.setStatusSet(taskStatuses);
 				Task task = this.taskQueueHelper.findRunningTask(taskPredicate(condition, realPrompt))
 						.findFirst().orElse(null);
 				if (task == null) {
@@ -68,9 +73,12 @@ public class ImagineMessageHandler extends MessageHandler {
 			}
 		} else if (MessageType.UPDATE == messageType) {
 			// 进度
+			HashSet<TaskStatus> taskStatuses = new HashSet<>();
+			taskStatuses.add(TaskStatus.SUBMITTED);
+			taskStatuses.add(TaskStatus.IN_PROGRESS);
 			TaskCondition condition = new TaskCondition()
-					.setActionSet(Set.of(TaskAction.IMAGINE))
-					.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+					.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.IMAGINE)))
+					.setStatusSet(taskStatuses);
 			Task task = this.taskQueueHelper.findRunningTask(taskPredicate(condition, realPrompt))
 					.findFirst().orElse(null);
 			if (task == null) {
@@ -97,8 +105,8 @@ public class ImagineMessageHandler extends MessageHandler {
 			if ("Waiting to start".equals(parseData.getStatus())) {
 				// 开始
 				TaskCondition condition = new TaskCondition()
-						.setActionSet(Set.of(TaskAction.IMAGINE))
-						.setStatusSet(Set.of(TaskStatus.SUBMITTED));
+						.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.IMAGINE)))
+						.setStatusSet(new HashSet<TaskStatus>(Collections.singleton(TaskStatus.SUBMITTED)));
 				Task task = this.taskQueueHelper.findRunningTask(taskPredicate(condition, realPrompt))
 						.findFirst().orElse(null);
 				if (task == null) {
@@ -110,9 +118,12 @@ public class ImagineMessageHandler extends MessageHandler {
 				task.awake();
 			} else {
 				// 完成
+				HashSet<TaskStatus> taskStatuses = new HashSet<>();
+				taskStatuses.add(TaskStatus.SUBMITTED);
+				taskStatuses.add(TaskStatus.IN_PROGRESS);
 				TaskCondition condition = new TaskCondition()
-						.setActionSet(Set.of(TaskAction.IMAGINE))
-						.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+						.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.IMAGINE)))
+						.setStatusSet(taskStatuses);
 				Task task = this.taskQueueHelper.findRunningTask(taskPredicate(condition, realPrompt))
 						.findFirst().orElse(null);
 				if (task == null) {
@@ -124,9 +135,12 @@ public class ImagineMessageHandler extends MessageHandler {
 			}
 		} else if (MessageType.UPDATE == messageType) {
 			// 进度
+			HashSet<TaskStatus> taskStatuses = new HashSet<>();
+			taskStatuses.add(TaskStatus.SUBMITTED);
+			taskStatuses.add(TaskStatus.IN_PROGRESS);
 			TaskCondition condition = new TaskCondition()
-					.setActionSet(Set.of(TaskAction.IMAGINE))
-					.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+					.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.IMAGINE)))
+					.setStatusSet(taskStatuses);
 			Task task = this.taskQueueHelper.findRunningTask(taskPredicate(condition, realPrompt))
 					.findFirst().orElse(null);
 			if (task == null) {

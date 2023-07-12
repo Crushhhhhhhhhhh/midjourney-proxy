@@ -12,7 +12,9 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,8 +43,8 @@ public class UpscaleMessageHandler extends MessageHandler {
 		if (start != null) {
 			TaskCondition condition = new TaskCondition()
 					.setFinalPromptEn(start.getPrompt())
-					.setActionSet(Set.of(TaskAction.UPSCALE))
-					.setStatusSet(Set.of(TaskStatus.SUBMITTED));
+					.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.UPSCALE)))
+					.setStatusSet(new HashSet<TaskStatus>(Collections.singleton(TaskStatus.SUBMITTED)));
 			Task task = this.taskQueueHelper.findRunningTask(condition)
 					.filter(t -> CharSequenceUtil.endWith(t.getDescription(), "U" + start.getIndex()))
 					.min(Comparator.comparing(Task::getSubmitTime))
@@ -56,10 +58,13 @@ public class UpscaleMessageHandler extends MessageHandler {
 		}
 		UVContentParseData end = parseEnd(content);
 		if (end != null) {
+			HashSet<TaskStatus> taskStatuses = new HashSet<>();
+			taskStatuses.add(TaskStatus.SUBMITTED);
+			taskStatuses.add(TaskStatus.IN_PROGRESS);
 			TaskCondition condition = new TaskCondition()
 					.setFinalPromptEn(end.getPrompt())
-					.setActionSet(Set.of(TaskAction.UPSCALE))
-					.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+					.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.UPSCALE)))
+					.setStatusSet(taskStatuses);
 			Task task = this.taskQueueHelper.findRunningTask(condition)
 					.filter(t -> CharSequenceUtil.endWith(t.getDescription(), "U" + end.getIndex()))
 					.min(Comparator.comparing(Task::getSubmitTime))
@@ -73,10 +78,13 @@ public class UpscaleMessageHandler extends MessageHandler {
 		}
 		UVContentParseData end2 = parseEnd2(content);
 		if (end2 != null) {
+			HashSet<TaskStatus> taskStatuses = new HashSet<>();
+			taskStatuses.add(TaskStatus.SUBMITTED);
+			taskStatuses.add(TaskStatus.IN_PROGRESS);
 			TaskCondition condition = new TaskCondition()
 					.setFinalPromptEn(end2.getPrompt())
-					.setActionSet(Set.of(TaskAction.UPSCALE))
-					.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+					.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.UPSCALE)))
+					.setStatusSet(taskStatuses);
 			Task task = this.taskQueueHelper.findRunningTask(condition)
 					.min(Comparator.comparing(Task::getSubmitTime))
 					.orElse(null);
@@ -96,10 +104,13 @@ public class UpscaleMessageHandler extends MessageHandler {
 		String content = message.getContentRaw();
 		UVContentParseData parseData = parseEnd(content);
 		if (parseData != null) {
+			HashSet<TaskStatus> taskStatuses = new HashSet<>();
+			taskStatuses.add(TaskStatus.SUBMITTED);
+			taskStatuses.add(TaskStatus.IN_PROGRESS);
 			TaskCondition condition = new TaskCondition()
 					.setFinalPromptEn(parseData.getPrompt())
-					.setActionSet(Set.of(TaskAction.UPSCALE))
-					.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+					.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.UPSCALE)))
+					.setStatusSet(taskStatuses);
 			Task task = this.taskQueueHelper.findRunningTask(condition)
 					.filter(t -> CharSequenceUtil.endWith(t.getDescription(), "U" + parseData.getIndex()))
 					.min(Comparator.comparing(Task::getSubmitTime))
@@ -113,10 +124,13 @@ public class UpscaleMessageHandler extends MessageHandler {
 		}
 		UVContentParseData end2 = parseEnd2(content);
 		if (end2 != null) {
+			HashSet<TaskStatus> taskStatuses = new HashSet<>();
+			taskStatuses.add(TaskStatus.SUBMITTED);
+			taskStatuses.add(TaskStatus.IN_PROGRESS);
 			TaskCondition condition = new TaskCondition()
 					.setFinalPromptEn(end2.getPrompt())
-					.setActionSet(Set.of(TaskAction.UPSCALE))
-					.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+					.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.UPSCALE)))
+					.setStatusSet(taskStatuses);
 			Task task = this.taskQueueHelper.findRunningTask(condition)
 					.min(Comparator.comparing(Task::getSubmitTime))
 					.orElse(null);

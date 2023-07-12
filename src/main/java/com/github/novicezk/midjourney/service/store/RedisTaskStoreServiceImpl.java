@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class RedisTaskStoreServiceImpl implements TaskStoreService {
 	private static final String KEY_PREFIX = "mj-task-store::";
@@ -46,7 +47,10 @@ public class RedisTaskStoreServiceImpl implements TaskStoreService {
 	public List<Task> list() {
 		Set<String> keys = this.redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
 			Cursor<byte[]> cursor = connection.scan(ScanOptions.scanOptions().match(KEY_PREFIX + "*").count(1000).build());
-			return cursor.stream().map(String::new).collect(Collectors.toSet());
+			return Stream.of(cursor)
+					.map(cursorElement -> new String(String.valueOf(cursorElement))).collect(Collectors.toSet())
+					;
+//			return cursor.stream().map(String::new).collect(Collectors.toSet());
 		});
 		if (keys == null || keys.isEmpty()) {
 			return Collections.emptyList();
@@ -54,12 +58,12 @@ public class RedisTaskStoreServiceImpl implements TaskStoreService {
 		ValueOperations<String, Task> operations = this.redisTemplate.opsForValue();
 		return keys.stream().map(operations::get)
 				.filter(Objects::nonNull)
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Task> list(TaskCondition condition) {
-		return list().stream().filter(condition).toList();
+		return list().stream().filter(condition).collect(Collectors.toList());
 	}
 
 	@Override

@@ -14,10 +14,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.springframework.stereotype.Component;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,8 +51,8 @@ public class BlendMessageHandler extends MessageHandler {
 				String taskId = this.discordHelper.findTaskIdWithCdnUrl(url);
 				TaskCondition condition = new TaskCondition()
 						.setId(taskId)
-						.setActionSet(Set.of(TaskAction.BLEND))
-						.setStatusSet(Set.of(TaskStatus.SUBMITTED));
+						.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.BLEND)))
+						.setStatusSet(new HashSet<TaskStatus>(Collections.singleton(TaskStatus.SUBMITTED)));
 				Task task = this.taskQueueHelper.findRunningTask(condition).findFirst().orElse(null);
 				if (task == null) {
 					return;
@@ -67,9 +64,12 @@ public class BlendMessageHandler extends MessageHandler {
 				task.awake();
 			} else {
 				// 完成
+				HashSet<TaskStatus> taskStatuses = new HashSet<>();
+				taskStatuses.add(TaskStatus.SUBMITTED);
+				taskStatuses.add(TaskStatus.IN_PROGRESS);
 				TaskCondition condition = new TaskCondition()
-						.setActionSet(Set.of(TaskAction.BLEND))
-						.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+						.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.BLEND)))
+						.setStatusSet(taskStatuses);
 				Task task = this.taskQueueHelper.findRunningTask(condition)
 						.max(Comparator.comparing(Task::getProgress))
 						.orElse(null);
@@ -84,8 +84,8 @@ public class BlendMessageHandler extends MessageHandler {
 			// 进度
 			TaskCondition condition = new TaskCondition()
 					.setProgressMessageId(message.getString("id"))
-					.setActionSet(Set.of(TaskAction.BLEND))
-					.setStatusSet(Set.of(TaskStatus.IN_PROGRESS));
+					.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.BLEND)))
+					.setStatusSet(new HashSet<TaskStatus>(Collections.singleton(TaskStatus.IN_PROGRESS)));
 			Task task = this.taskQueueHelper.findRunningTask(condition).findFirst().orElse(null);
 			if (task == null) {
 				return;
@@ -119,8 +119,8 @@ public class BlendMessageHandler extends MessageHandler {
 				String taskId = this.discordHelper.findTaskIdWithCdnUrl(url);
 				TaskCondition condition = new TaskCondition()
 						.setId(taskId)
-						.setActionSet(Set.of(TaskAction.BLEND))
-						.setStatusSet(Set.of(TaskStatus.SUBMITTED));
+						.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.BLEND)))
+						.setStatusSet(new HashSet<TaskStatus>(Collections.singleton(TaskStatus.SUBMITTED)));
 				Task task = this.taskQueueHelper.findRunningTask(condition).findFirst().orElse(null);
 				if (task == null) {
 					return;
@@ -132,9 +132,12 @@ public class BlendMessageHandler extends MessageHandler {
 				task.awake();
 			} else {
 				// 完成
+				HashSet<TaskStatus> taskStatuses = new HashSet<>();
+				taskStatuses.add(TaskStatus.SUBMITTED);
+				taskStatuses.add(TaskStatus.IN_PROGRESS);
 				TaskCondition condition = new TaskCondition()
-						.setActionSet(Set.of(TaskAction.BLEND))
-						.setStatusSet(Set.of(TaskStatus.SUBMITTED, TaskStatus.IN_PROGRESS));
+						.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.BLEND)))
+						.setStatusSet(taskStatuses);
 				Task task = this.taskQueueHelper.findRunningTask(condition)
 						.max(Comparator.comparing(Task::getProgress))
 						.orElse(null);
@@ -149,8 +152,8 @@ public class BlendMessageHandler extends MessageHandler {
 			// 进度
 			TaskCondition condition = new TaskCondition()
 					.setProgressMessageId(message.getId())
-					.setActionSet(Set.of(TaskAction.BLEND))
-					.setStatusSet(Set.of(TaskStatus.IN_PROGRESS));
+					.setActionSet(new HashSet<TaskAction>(Collections.singleton(TaskAction.BLEND)))
+					.setStatusSet(new HashSet<TaskStatus>(Collections.singleton(TaskStatus.IN_PROGRESS)));
 			Task task = this.taskQueueHelper.findRunningTask(condition).findFirst().orElse(null);
 			if (task == null) {
 				return;

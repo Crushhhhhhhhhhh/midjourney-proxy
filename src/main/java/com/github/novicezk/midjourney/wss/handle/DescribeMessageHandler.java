@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,17 +22,22 @@ public class DescribeMessageHandler extends MessageHandler {
 
 	@Override
 	public void handle(MessageType messageType, DataObject message) {
-		Optional<DataObject> interaction = message.optObject("interaction");
-		if (interaction.isEmpty() || !"describe".equals(interaction.get().getString("name"))) {
-			return;
+		System.out.println(message);
+		Optional<DataObject> interaction = Optional.empty();
+		if (message.optObject("interaction").isPresent()){
+			interaction = message.optObject("interaction");
+			if (StringUtils.isEmpty(interaction) || !"describe".equals(interaction.get().getString("name"))) {
+				return;
+			}
 		}
+
 		DataArray embeds = message.getArray("embeds");
 		if (embeds.isEmpty()) {
 			return;
 		}
 		String prompt = embeds.getObject(0).getString("description");
 		Optional<DataObject> imageOptional = embeds.getObject(0).optObject("image");
-		if (imageOptional.isEmpty()) {
+		if (StringUtils.isEmpty(imageOptional)) {
 			return;
 		}
 		String imageUrl = imageOptional.get().getString("url");

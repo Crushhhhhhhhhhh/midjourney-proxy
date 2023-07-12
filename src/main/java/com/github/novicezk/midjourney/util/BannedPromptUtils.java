@@ -5,10 +5,12 @@ import cn.hutool.core.text.CharSequenceUtil;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class BannedPromptUtils {
@@ -21,10 +23,10 @@ public class BannedPromptUtils {
 		if (file.exists()) {
 			lines = FileUtil.readLines(file, StandardCharsets.UTF_8);
 		} else {
-			var resource = BannedPromptUtils.class.getResource("/banned-words.txt");
+			URL resource = BannedPromptUtils.class.getResource("/banned-words.txt");
 			lines = FileUtil.readLines(resource, StandardCharsets.UTF_8);
 		}
-		BANNED_WORDS = lines.stream().filter(CharSequenceUtil::isNotBlank).toList();
+		BANNED_WORDS = lines.stream().filter(CharSequenceUtil::isNotBlank).collect(Collectors.toList());
 	}
 
 	public static boolean isBanned(String promptEn) {

@@ -29,22 +29,26 @@ import eu.maxschuster.dataurl.IDataUrlSerializer;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Api(tags = "任务提交")
 @RestController
+@CrossOrigin
 @RequestMapping("/submit")
 @RequiredArgsConstructor
 public class SubmitController {
-	private final TranslateService translateService;
+//	@Autowired
+//	@Qualifier("GPTTranslateServiceImpl")
+//	private final TranslateService translateService;
 	private final TaskStoreService taskStoreService;
 	private final ProxyProperties properties;
 	private final TaskService taskService;
@@ -63,9 +67,9 @@ public class SubmitController {
 		String promptEn;
 		int paramStart = prompt.indexOf(" --");
 		if (paramStart > 0) {
-			promptEn = this.translateService.translateToEnglish(prompt.substring(0, paramStart)).trim() + prompt.substring(paramStart);
+			promptEn = prompt.split("#")[0];
 		} else {
-			promptEn = this.translateService.translateToEnglish(prompt).trim();
+			promptEn = prompt.split("#")[0];
 		}
 		if (CharSequenceUtil.isBlank(promptEn)) {
 			promptEn = prompt;
@@ -109,7 +113,11 @@ public class SubmitController {
 		if (CharSequenceUtil.isBlank(changeDTO.getTaskId())) {
 			return SubmitResultVO.fail(ReturnCode.VALIDATION_ERROR, "taskId不能为空");
 		}
-		if (!Set.of(TaskAction.UPSCALE, TaskAction.VARIATION, TaskAction.REROLL).contains(changeDTO.getAction())) {
+		HashSet<TaskAction> taskActions = new HashSet<>();
+		taskActions.add(TaskAction.UPSCALE);
+		taskActions.add(TaskAction.VARIATION);
+		taskActions.add(TaskAction.REROLL);
+		if (!taskActions.contains(changeDTO.getAction())) {
 			return SubmitResultVO.fail(ReturnCode.VALIDATION_ERROR, "action参数错误");
 		}
 		String description = "/up " + changeDTO.getTaskId();
@@ -132,7 +140,11 @@ public class SubmitController {
 		if (!TaskStatus.SUCCESS.equals(targetTask.getStatus())) {
 			return SubmitResultVO.fail(ReturnCode.VALIDATION_ERROR, "关联任务状态错误");
 		}
-		if (!Set.of(TaskAction.IMAGINE, TaskAction.VARIATION, TaskAction.BLEND).contains(targetTask.getAction())) {
+		HashSet<TaskAction> taskActions1 = new HashSet<>();
+		taskActions1.add(TaskAction.IMAGINE);
+		taskActions1.add(TaskAction.VARIATION);
+		taskActions1.add(TaskAction.BLEND);
+		if (!taskActions1.contains(targetTask.getAction())) {
 			return SubmitResultVO.fail(ReturnCode.VALIDATION_ERROR, "关联任务不允许执行变化");
 		}
 		Task task = newTask(changeDTO);

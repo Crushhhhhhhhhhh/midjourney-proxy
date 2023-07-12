@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ public class ErrorMessageHandler extends MessageHandler {
 	@Override
 	public void handle(MessageType messageType, DataObject message) {
 		Optional<DataArray> embedsOptional = message.optArray("embeds");
-		if (embedsOptional.isEmpty() || embedsOptional.get().isEmpty()) {
+		if (StringUtils.isEmpty(embedsOptional) || embedsOptional.get().isEmpty()) {
 			return;
 		}
 		DataObject embed = embedsOptional.get().getObject(0);

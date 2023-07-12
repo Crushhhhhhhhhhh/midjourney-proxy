@@ -5,10 +5,7 @@ import cn.hutool.core.thread.ThreadUtil;
 import com.github.novicezk.midjourney.ProxyProperties;
 import com.github.novicezk.midjourney.support.DiscordHelper;
 import com.github.novicezk.midjourney.wss.WebSocketStarter;
-import com.neovisionaries.ws.client.WebSocket;
-import com.neovisionaries.ws.client.WebSocketAdapter;
-import com.neovisionaries.ws.client.WebSocketFactory;
-import com.neovisionaries.ws.client.WebSocketFrame;
+import com.neovisionaries.ws.client.*;
 import eu.bitwalker.useragentutils.UserAgent;
 import lombok.extern.slf4j.Slf4j;
 import net.dv8tion.jda.api.utils.data.DataArray;
@@ -19,6 +16,8 @@ import net.dv8tion.jda.internal.utils.compress.Decompressor;
 import net.dv8tion.jda.internal.utils.compress.ZlibDecompressor;
 
 import javax.annotation.Resource;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,7 @@ public class UserWebSocketStarter extends WebSocketAdapter implements WebSocketS
 
 	private ScheduledExecutorService heartExecutor;
 	private WebSocket socket = null;
-	private String sessionId;
+	private String sessionId = "9c4055428e13bcbf2248a6b36084c5f3";
 	private Future<?> heartbeatTask;
 	private Decompressor decompressor;
 
@@ -64,7 +63,13 @@ public class UserWebSocketStarter extends WebSocketAdapter implements WebSocketS
 	public synchronized void start() throws Exception {
 		this.decompressor = new ZlibDecompressor(2048);
 		this.heartExecutor = Executors.newSingleThreadScheduledExecutor();
+//		Proxy proxy = new Proxy(Proxy.Type.HTTP,new InetSocketAddress("127.0.0.1", 7890));
 		WebSocketFactory webSocketFactory = createWebSocketFactory(this.properties);
+//		WebSocketFactory factory
+//		ProxySettings proxySettings = new ProxySettings(webSocketFactory).setHost("127.0.0.1").setPort(7890);
+//
+//		ProxySettings settings = new ProxySettings(webSocketFactory,proxySettings);
+
 		this.socket = webSocketFactory.createSocket(this.discordHelper.getWss() + "/?encoding=json&v=9&compress=zlib-stream");
 		this.socket.addListener(this);
 		this.socket.addHeader("Accept-Encoding", "gzip, deflate, br").addHeader("Accept-Language", "en-US,en;q=0.9")

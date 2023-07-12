@@ -16,11 +16,20 @@ public enum MessageType {
 	DELETE;
 
 	public static MessageType of(String type) {
-		return switch (type) {
-			case "MESSAGE_CREATE" -> CREATE;
-			case "MESSAGE_UPDATE" -> UPDATE;
-			case "MESSAGE_DELETE" -> DELETE;
-			default -> null;
+		MessageType messageType = null;
+		 switch (type) {
+			 case "MESSAGE_CREATE" :
+				 messageType = CREATE;
+				 break;
+			 case "MESSAGE_UPDATE" :
+				 messageType = UPDATE;
+				 break;
+			 case "MESSAGE_DELETE" :
+				 messageType = DELETE;
+				 break;
+			 default :
+				 messageType = null;
 		};
+		return messageType;
 	}
 }

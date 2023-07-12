@@ -9,21 +9,18 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Api(tags = "任务查询")
 @RestController
+@CrossOrigin
 @RequestMapping("/task")
 @RequiredArgsConstructor
 public class TaskController {
@@ -35,7 +32,7 @@ public class TaskController {
 	public List<Task> list() {
 		return this.taskStoreService.list().stream()
 				.sorted((t1, t2) -> CompareUtil.compare(t2.getSubmitTime(), t1.getSubmitTime()))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "指定ID获取任务")
@@ -50,7 +47,7 @@ public class TaskController {
 		Set<String> queueTaskIds = this.taskQueueHelper.getQueueTaskIds();
 		return queueTaskIds.stream().map(this.taskStoreService::get).filter(Objects::nonNull)
 				.sorted(Comparator.comparing(Task::getSubmitTime))
-				.toList();
+				.collect(Collectors.toList());
 	}
 
 	@ApiOperation(value = "根据条件查询任务")
@@ -59,7 +56,7 @@ public class TaskController {
 		if (conditionDTO.getIds() == null) {
 			return Collections.emptyList();
 		}
-		return conditionDTO.getIds().stream().map(this.taskStoreService::get).filter(Objects::nonNull).toList();
+		return conditionDTO.getIds().stream().map(this.taskStoreService::get).filter(Objects::nonNull).collect(Collectors.toList());
 	}
 
 }
